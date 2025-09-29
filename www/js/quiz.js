@@ -60,7 +60,14 @@ class QuizManager {
         };
 
         this.userAnswers.push(answerData);
-        if (isCorrect) this.score++;
+        if (isCorrect) {
+            this.score++;
+            // Vibration pour réponse correcte
+            this.triggerVibration('correct');
+        } else {
+            // Vibration pour réponse incorrecte
+            this.triggerVibration('wrong');
+        }
         this.currentQuestion++;
 
         return {
@@ -78,6 +85,9 @@ class QuizManager {
         this.endTime = Date.now();
         this.isQuizActive = false;
         const totalTime = Math.round((this.endTime - this.startTime) / 1000);
+        
+        // Vibration pour fin de jeu
+        this.triggerVibration('gameEnd');
         
         return {
             score: this.score,
@@ -112,6 +122,28 @@ class QuizManager {
         const minutes = Math.floor(timeInSeconds / 60);
         const seconds = Math.floor(timeInSeconds % 60);
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    triggerVibration(type) {
+        if (typeof cordova !== 'undefined' && cordova.plugins && cordova.plugins.AdvancedVibration) {
+            const vibration = cordova.plugins.AdvancedVibration;
+            
+            switch(type) {
+                case 'correct':
+                    vibration.correctAnswer();
+                    break;
+                case 'wrong':
+                    vibration.wrongAnswer();
+                    break;
+                case 'gameEnd':
+                    vibration.gameEnd();
+                    break;
+                default:
+                    console.log('Type de vibration non reconnu:', type);
+            }
+        } else {
+            console.log('Plugin AdvancedVibration non disponible');
+        }
     }
 }
 
