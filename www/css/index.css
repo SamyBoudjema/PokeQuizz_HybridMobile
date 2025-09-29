@@ -2,24 +2,50 @@
 
 body {
     margin: 0;
+    padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: #333;
     -webkit-user-select: none;
     user-select: none;
+    height: 100vh;
+    overflow: hidden;
 }
 
-.screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow-y: auto; }
+.screen { 
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh; 
+    height: 100dvh;
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch;
+}
 .screen.active { display: block; }
 
-.container { max-width: 600px; margin: 0 auto; padding: 30px 20px; min-height: 100vh; display: flex; flex-direction: column; }
+.container { 
+    max-width: 600px; 
+    margin: 0 auto; 
+    padding: max(env(safe-area-inset-top), 30px) 20px max(env(safe-area-inset-bottom), 30px); 
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex; 
+    flex-direction: column; 
+}
 
 #home-screen { background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; }
 #quiz-screen { background: linear-gradient(135deg, #74b9ff, #0984e3); color: white; }
 #leaderboard-screen { background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white; }
 
 .logo-section { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60vh; }
-.logo { width: 120px; height: 120px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 20px; }
+.logo { 
+    width: 150px; 
+    height: 150px; 
+    object-fit: contain;
+    margin-bottom: 20px; 
+}
 
 .app-title { font-size: 2.5rem; font-weight: 700; margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 .app-subtitle { font-size: 1.1rem; opacity: 0.9; margin: 0 0 40px 0; }
@@ -45,8 +71,8 @@ body {
 .glass-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; }
 
 .quiz-header, .leaderboard-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
-    flex-wrap: wrap; gap: 10px; padding: 15px 20px;
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; margin-top: 20px;
+    flex-wrap: wrap; gap: 10px; padding: 20px 20px 15px;
 }
 .quiz-header h1, .leaderboard-header h1 { margin: 0; font-size: 1.8rem; }
 
@@ -111,9 +137,9 @@ body {
 .hidden { display: none !important; }
 
 @media (max-width: 768px) {
-    .container { padding: 25px 15px; }
+    .container { padding: max(env(safe-area-inset-top), 25px) 15px max(env(safe-area-inset-bottom), 25px); }
     .app-title { font-size: 2rem; }
-    .quiz-header, .leaderboard-header { flex-direction: column; align-items: stretch; text-align: center; padding: 12px 15px; margin-bottom: 20px; }
+    .quiz-header, .leaderboard-header { flex-direction: column; align-items: stretch; text-align: center; padding: 25px 15px 12px; margin-bottom: 20px; margin-top: 10px; }
     .quiz-stats { flex-direction: row; justify-content: space-around; align-items: center; }
     .input-group { flex-direction: column; }
     .table-header, .score-row { grid-template-columns: 50px 1fr 60px 60px 80px; font-size: 0.8rem; }
@@ -124,10 +150,10 @@ body {
 }
 
 @media (max-width: 480px) {
-    .container { padding: 20px 10px; }
-    .logo { width: 80px; height: 80px; }
+    .container { padding: max(env(safe-area-inset-top), 20px) 10px max(env(safe-area-inset-bottom), 20px); }
+    .logo { width: 100px; height: 100px; }
     .app-title { font-size: 1.8rem; }
     .pokemon-image { max-width: 200px; max-height: 200px; }
     .btn { padding: 12px 20px; font-size: 1rem; }
-    .quiz-header, .leaderboard-header { padding: 10px 12px; margin-bottom: 15px; }
+    .quiz-header, .leaderboard-header { padding: 30px 12px 10px; margin-bottom: 15px; margin-top: 5px; }
 }
