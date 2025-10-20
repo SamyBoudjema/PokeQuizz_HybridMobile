@@ -1,57 +1,94 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web.
+# 🎮 PokéApp - Kotlin Multiplatform
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Application multiplateforme (Android, iOS, Web) pour découvrir et réviser les Pokémon, développée avec Kotlin Multiplatform et Compose Multiplatform.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 📱 Fonctionnalités
 
-### Build and Run Android Application
+### Mode Révision
+- Affichage aléatoire de Pokémon avec toutes leurs informations
+- Visualisation en couleur ou noir et blanc
+- Détails complets : nom, numéro, types, statistiques
+- Bouton pour charger un nouveau Pokémon aléatoire
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+### Mode Quiz 🎯
+- Quiz interactif pour deviner le nom des Pokémon
+- Affichage de l'image du Pokémon
+- Saisie du nom et validation
+- Feedback visuel (vert pour succès, rouge pour échec)
+- Enchaînement automatique avec le bouton "Suivant"
 
-### Build and Run Web Application
+## 🏗️ Architecture du Projet
 
-To build and run the development version of the web app, use the run configuration from the run widget
-in your IDE's toolbar or run it directly from the terminal:
-- for the Wasm target (faster, modern browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-- for the JS target (slower, supports older browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:jsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:jsBrowserDevelopmentRun
-    ```
+```
+composeApp/src/commonMain/kotlin/com/mastercyber/tp1/
+├── App.kt                          # Point d'entrée principal
+├── Greeting.kt                     # Service API Pokémon
+├── models/                         # Modèles de données
+│   └── Pokemon.kt
+├── ui/
+│   ├── screens/                    # Écrans de l'application
+│   │   ├── PokemonScreen.kt        # Mode révision
+│   │   └── QuizScreen.kt           # Mode quiz
+│   └── components/                 # Composants réutilisables
+│       ├── LoadingState.kt
+│       ├── PokemonCard.kt
+│       └── QuizResultCard.kt
+└── utils/                          # Utilitaires
+```
 
-### Build and Run iOS Application
+## 🚀 Technologies
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+- **Kotlin Multiplatform** - Partage de code entre plateformes
+- **Compose Multiplatform** - UI déclarative multiplateforme
+- **Ktor Client** - Requêtes HTTP
+- **Kotlinx Serialization** - Sérialisation JSON
+- **Material 3** - Design moderne
+
+## 🔧 Build et Exécution
+
+### Android Application
+
+```shell
+./gradlew :composeApp:assembleDebug
+```
+
+### Web Application (Wasm)
+
+```shell
+./gradlew :composeApp:wasmJsBrowserDevelopmentRun
+```
+
+### Web Application (JS)
+
+```shell
+./gradlew :composeApp:jsBrowserDevelopmentRun
+```
+
+### iOS Application
+
+Ouvrez `iosApp/iosApp.xcodeproj` dans Xcode et lancez l'application.
+
+## 📚 API Utilisée
+
+- [Tyradex API](https://tyradex.vercel.app/) - API Pokémon en français
+
+## 👨‍💻 Développement
+
+### Structure modulaire
+Le projet suit une architecture propre et modulaire :
+- Séparation des écrans et des composants
+- Composants réutilisables
+- Code maintenable et testable
+
+### Prérequis
+- JDK 17 ou supérieur
+- Android Studio ou IntelliJ IDEA
+- Xcode (pour iOS)
+- Node.js (pour le target Web)
+
+## 📝 Notes
+
+Projet réalisé dans le cadre du Master 2 Hybrid Mobile.
 
 ---
 

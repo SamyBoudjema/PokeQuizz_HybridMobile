@@ -1,0 +1,15 @@
+package com.mastercyber.tp1.ui.components
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun LoadingState(text: String) {
+    CircularProgressIndicator()
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(text)
+}
+
