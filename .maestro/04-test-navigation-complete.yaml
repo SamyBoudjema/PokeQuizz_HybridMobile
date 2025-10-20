@@ -1,0 +1,41 @@
+appId: com.mastercyber.tp1
+---
+# Test de navigation complète entre les écrans
+- launchApp
+- assertVisible: "🎮 PokéApp"
+
+# Test 1: Révision Pokémon
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 10000
+- tapOn: "Fermer"
+
+# Test 2: Quiz Pokémon
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-image"
+    timeout: 10000
+- tapOn: "Fermer le Quiz"
+
+# Test 3: Classement
+- tapOn: "🏆 Classement"
+- assertVisible: "🏆 Classement"
+- tapOn: "Fermer"
+
+# Test 4: Revenir à Révision
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 10000
+
+# Test 5: Basculer au Quiz depuis Révision
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-image"
+    timeout: 10000
+
+# Test 6: Basculer au Classement depuis Quiz
+- tapOn: "🏆 Classement"
+- assertVisible: "🏆 Classement"
+

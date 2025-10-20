@@ -1,0 +1,29 @@
+appId: com.mastercyber.tp1
+---
+# Test du mode Révision Pokémon
+- launchApp
+- assertVisible: "🎮 PokéApp"
+
+# Ouvrir le mode Révision
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 10000
+
+# Vérifier que le Pokémon se charge
+- assertVisible: "pokemon-card"
+- assertVisible: "pokemon-image"
+
+# Basculer en noir et blanc
+- tapOn: "Noir & Blanc"
+- assertVisible: "pokemon-image"
+
+# Recharger un nouveau Pokémon
+- tapOn: "Nouveau Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 10000
+
+# Fermer le mode révision
+- tapOn: "Fermer"
+- assertNotVisible: "pokemon-card"

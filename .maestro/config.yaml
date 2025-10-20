@@ -1,0 +1,6 @@
+# Configuration Maestro pour PokéApp
+env:
+  APP_ID: com.mastercyber.tp1
+  DEFAULT_TIMEOUT: 10000
+  QUIZ_QUESTIONS: 10
+

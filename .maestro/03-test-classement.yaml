@@ -1,0 +1,18 @@
+appId: com.mastercyber.tp1
+---
+# Test du Classement
+- launchApp
+- assertVisible: "🎮 PokéApp"
+
+# Ouvrir le classement
+- tapOn: "🏆 Classement"
+- extendedWaitUntil:
+    visible: "🏆 Classement"
+    timeout: 5000
+
+# Le classement peut être vide initialement
+- assertVisible: "Fermer"
+
+# Fermer le classement
+- tapOn: "Fermer"
+- assertNotVisible: "🏆 Classement"

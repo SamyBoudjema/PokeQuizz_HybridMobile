@@ -10,8 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import com.mastercyber.tp1.models.Pokemon
-import com.mastercyber.tp1.ui.screens.PokemonScreen
-import com.mastercyber.tp1.ui.screens.QuizScreen
+import com.mastercyber.tp1.ui.screens.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,6 +20,7 @@ fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         var showQuiz by remember { mutableStateOf(false) }
+        var showRanking by remember { mutableStateOf(false) }
 
         var pokemon by remember { mutableStateOf<Pokemon?>(null) }
         var colorImage by remember { mutableStateOf<ImageBitmap?>(null) }
@@ -35,6 +35,33 @@ fun App() {
         var quizResult by remember { mutableStateOf<Boolean?>(null) }
         var quizLoading by remember { mutableStateOf(false) }
         var quizTrigger by remember { mutableStateOf(0) }
+        var quizQuestions by remember { mutableStateOf<List<Triple<Pokemon?, ByteArray?, ByteArray?>>>(emptyList()) }
+        var currentQuestionIndex by remember { mutableStateOf(0) }
+        var quizScore by remember { mutableStateOf(0) }
+
+        var showNameDialog by remember { mutableStateOf(false) }
+        var playerNameInput by remember { mutableStateOf("") }
+
+        var leaderboard by remember { mutableStateOf(listOf<Triple<String, Int, String>>()) }
+
+        val resetContent: () -> Unit = {
+            pokemon = null
+            colorImage = null
+            bwImage = null
+            showBlackAndWhite = false
+            reloadTrigger = 0
+        }
+
+        val resetQuizState: () -> Unit = {
+            quizPokemon = null
+            quizImage = null
+            quizAnswer = ""
+            quizResult = null
+            quizTrigger = 0
+            quizQuestions = emptyList()
+            currentQuestionIndex = 0
+            quizScore = 0
+        }
 
         Scaffold(
             topBar = {
@@ -59,35 +86,21 @@ fun App() {
                 Button(onClick = {
                     showContent = !showContent
                     showQuiz = false
-                    if (!showContent) {
-                        pokemon = null
-                        colorImage = null
-                        bwImage = null
-                        showBlackAndWhite = false
-                        reloadTrigger = 0
-                    }
-                }) {
-                    Text(if (showContent) "Fermer" else "Révision Pokémon")
-                }
+                    showRanking = false
+                    if (!showContent) resetContent()
+                }) { Text(if (showContent) "Fermer" else "Révision Pokémon") }
 
                 Button(
                     onClick = {
                         showQuiz = !showQuiz
                         showContent = false
-                        if (!showQuiz) {
-                            quizPokemon = null
-                            quizImage = null
-                            quizAnswer = ""
-                            quizResult = null
-                            quizTrigger = 0
-                        }
+                        showRanking = false
+                        if (!showQuiz) resetQuizState()
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Text(if (showQuiz) "Fermer le Quiz" else "🎯 Quiz Pokémon")
-                }
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                ) { Text(if (showQuiz) "Fermer le Quiz" else "🎯 Quiz Pokémon") }
+
+                Button(onClick = { showRanking = true; showContent = false; showQuiz = false }) { Text("🏆 Classement") }
 
                 AnimatedVisibility(showContent) {
                     LaunchedEffect(reloadTrigger) {
@@ -108,13 +121,7 @@ fun App() {
                         bwImage = bwImage,
                         showBlackAndWhite = showBlackAndWhite,
                         onToggleBlackAndWhite = { showBlackAndWhite = !showBlackAndWhite },
-                        onReload = {
-                            pokemon = null
-                            colorImage = null
-                            bwImage = null
-                            showBlackAndWhite = false
-                            reloadTrigger++
-                        }
+                        onReload = { resetContent() }
                     )
                 }
 
@@ -122,12 +129,26 @@ fun App() {
                     LaunchedEffect(quizTrigger) {
                         if (showQuiz && quizTrigger >= 0) {
                             quizLoading = true
-                            quizAnswer = ""
-                            quizResult = null
-                            val (poke, colorBytes, _) = Greeting().fetchPokemonWithImage()
-                            quizPokemon = poke
-                            quizImage = colorBytes?.let { convertBytesToImageBitmap(it) }
-                            quizLoading = false
+                            resetQuizState()
+                            try {
+                                val list = mutableListOf<Triple<Pokemon?, ByteArray?, ByteArray?>>()
+                                repeat(10) {
+                                    val (poke, colorBytes, bwBytes) = Greeting().fetchPokemonWithImage()
+                                    list.add(Triple(poke, colorBytes, bwBytes))
+                                }
+                                quizQuestions = list
+                                val first = quizQuestions.getOrNull(0)
+                                quizPokemon = first?.first
+                                quizImage = when {
+                                    first?.third != null -> convertBytesToBlackAndWhite(first.third!!)
+                                    first?.second != null -> convertBytesToBlackAndWhite(first.second!!)
+                                    else -> null
+                                }
+                            } catch (_: Exception) {
+                                resetQuizState()
+                            } finally {
+                                quizLoading = false
+                            }
                         }
                     }
 
@@ -141,16 +162,74 @@ fun App() {
                         onSubmit = {
                             val correctName = quizPokemon?.name?.fr?.lowercase()?.trim()
                             val userAnswer = quizAnswer.lowercase().trim()
-                            quizResult = correctName == userAnswer
+                            val isCorrect = correctName == userAnswer
+                            quizResult = isCorrect
+                            if (isCorrect) quizScore++
                         },
                         onNext = {
-                            quizPokemon = null
-                            quizImage = null
-                            quizAnswer = ""
-                            quizResult = null
-                            quizTrigger++
+                            if (currentQuestionIndex < quizQuestions.size - 1) {
+                                currentQuestionIndex++
+                                val next = quizQuestions.getOrNull(currentQuestionIndex)
+                                quizPokemon = next?.first
+                                quizImage = when {
+                                    next?.third != null -> convertBytesToBlackAndWhite(next.third!!)
+                                    next?.second != null -> convertBytesToBlackAndWhite(next.second!!)
+                                    else -> null
+                                }
+                                quizAnswer = ""
+                                quizResult = null
+                            } else {
+                                showQuiz = false
+                                showNameDialog = true
+                            }
                         }
                     )
+                }
+
+                if (showNameDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showNameDialog = false
+                            playerNameInput = ""
+                            showRanking = true
+                        },
+                        title = { Text("Enregistrer ton score") },
+                        text = {
+                            Column {
+                                Text("Ton score: $quizScore / ${quizQuestions.size}")
+                                Spacer(modifier = Modifier.height(8.dp))
+                                OutlinedTextField(
+                                    value = playerNameInput,
+                                    onValueChange = { playerNameInput = it },
+                                    label = { Text("Pseudo") },
+                                    singleLine = true,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                val name = if (playerNameInput.isBlank()) "Joueur" else playerNameInput.trim()
+                                val dateStr = "now"
+                                leaderboard = leaderboard + Triple(name, quizScore, dateStr)
+                                showNameDialog = false
+                                playerNameInput = ""
+                                resetQuizState()
+                                showRanking = true
+                            }) { Text("Enregistrer") }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = {
+                                showNameDialog = false
+                                playerNameInput = ""
+                                showRanking = true
+                            }) { Text("Annuler") }
+                        }
+                    )
+                }
+
+                AnimatedVisibility(showRanking) {
+                    RankingScreen(leaderboard = leaderboard, onClose = { showRanking = false })
                 }
             }
         }

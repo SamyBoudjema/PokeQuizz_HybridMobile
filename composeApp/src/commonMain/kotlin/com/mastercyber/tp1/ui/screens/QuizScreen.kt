@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.testTag
 import com.mastercyber.tp1.models.Pokemon
 import com.mastercyber.tp1.ui.components.LoadingState
 import com.mastercyber.tp1.ui.components.QuizResultCard
@@ -40,7 +41,8 @@ fun QuizScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .testTag("quiz-card"),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -61,7 +63,9 @@ fun QuizScreen(
                         Image(
                             bitmap = it,
                             contentDescription = "Pokemon mystère",
-                            modifier = Modifier.size(200.dp)
+                            modifier = Modifier
+                                .size(200.dp)
+                                .testTag("quiz-image")
                         )
                     }
 
@@ -70,7 +74,9 @@ fun QuizScreen(
                         onValueChange = onAnswerChange,
                         label = { Text("Nom du Pokémon") },
                         enabled = result == null,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("quiz-input"),
                         singleLine = true
                     )
 
@@ -85,14 +91,18 @@ fun QuizScreen(
                         Button(
                             onClick = onSubmit,
                             enabled = answer.isNotBlank(),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("quiz-submit-button")
                         ) {
                             Text("Valider")
                         }
                     } else {
                         Button(
                             onClick = onNext,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("quiz-next-button"),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.secondary
                             )
@@ -105,4 +115,3 @@ fun QuizScreen(
         }
     }
 }
-

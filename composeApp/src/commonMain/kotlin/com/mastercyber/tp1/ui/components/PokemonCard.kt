@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.testTag
 import com.mastercyber.tp1.models.Pokemon
 
 @Composable
@@ -23,7 +24,8 @@ fun PokemonCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .testTag("pokemon-card"),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -70,7 +72,9 @@ private fun PokemonImage(
         Image(
             bitmap = image,
             contentDescription = "Pokemon",
-            modifier = Modifier.size(250.dp)
+            modifier = Modifier
+                .size(250.dp)
+                .testTag("pokemon-image")
         )
     }
 }
@@ -154,4 +158,3 @@ private fun ReloadButton(onClick: () -> Unit) {
         Text("Charger un autre Pokémon")
     }
 }
-

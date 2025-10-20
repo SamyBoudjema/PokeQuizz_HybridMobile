@@ -1,0 +1,49 @@
+appId: com.mastercyber.tp1
+---
+# Test de robustesse et gestion d'erreurs
+- launchApp
+- assertVisible: "🎮 PokéApp"
+
+# Test 1: Annulation du quiz
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-image"
+    timeout: 10000
+- tapOn: "Fermer le Quiz"
+- assertNotVisible: "quiz-image"
+
+# Test 2: Navigation rapide entre écrans
+- tapOn: "Révision Pokémon"
+- tapOn: "🏆 Classement"
+- tapOn: "Fermer"
+- tapOn: "🎯 Quiz Pokémon"
+- tapOn: "Fermer le Quiz"
+
+# Test 3: Réponse vide au quiz
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-input"
+    timeout: 10000
+# Le bouton Valider doit être désactivé si le champ est vide
+- tapOn: "quiz-input"
+- inputText: ""
+# Essayer de valider (devrait être désactivé)
+
+# Test 4: Multiples recharges rapides en révision
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 10000
+- tapOn: "Nouveau Pokémon"
+- waitForAnimationToEnd
+- tapOn: "Nouveau Pokémon"
+- waitForAnimationToEnd
+
+# Test 5: Basculement rapide noir et blanc
+- tapOn: "Noir & Blanc"
+- waitForAnimationToEnd
+- tapOn: "Couleur"
+- waitForAnimationToEnd
+- tapOn: "Noir & Blanc"
+
+- tapOn: "Fermer"

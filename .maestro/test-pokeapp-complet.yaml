@@ -1,0 +1,183 @@
+appId: com.mastercyber.tp1
+---
+# ========================================
+# TEST COMPLET - PokéApp
+# ========================================
+# Ce fichier teste toutes les fonctionnalités
+# de l'application en un seul workflow
+# ========================================
+
+- launchApp
+- assertVisible: "🎮 PokéApp"
+
+# ========================================
+# SECTION 1: Test Révision Pokémon
+# ========================================
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 15000
+
+# Vérifier que le Pokémon se charge
+- assertVisible: "pokemon-card"
+- assertVisible: "pokemon-image"
+
+# Basculer en noir et blanc
+- tapOn:
+    text: "Afficher en noir et blanc"
+    optional: true
+- assertVisible: "pokemon-image"
+
+# Basculer en couleur
+- tapOn:
+    text: "Afficher en couleur"
+    optional: true
+- assertVisible: "pokemon-image"
+
+# Recharger un nouveau Pokémon
+- tapOn: "Nouveau Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 10000
+- assertVisible: "pokemon-image"
+
+# Fermer le mode révision
+- tapOn: "Fermer"
+- assertNotVisible: "pokemon-card"
+
+# ========================================
+# SECTION 2: Test Quiz Pokémon - Réponse incorrecte
+# ========================================
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-image"
+    timeout: 15000
+
+# Vérifier que le quiz se charge
+- assertVisible: "quiz-image"
+- assertVisible: "quiz-input"
+
+# Entrer une réponse incorrecte
+- tapOn: "quiz-input"
+- inputText: "mauvaisnom"
+- tapOn: "Valider"
+- assertVisible: "❌"
+
+# Passer à la question suivante
+- tapOn: "Suivant"
+- extendedWaitUntil:
+    visible: "quiz-input"
+    timeout: 5000
+
+# Fermer le quiz
+- tapOn: "Fermer le Quiz"
+- assertNotVisible: "quiz-image"
+
+# ========================================
+# SECTION 3: Test Classement
+# ========================================
+- tapOn: "🏆 Classement"
+- extendedWaitUntil:
+    visible: "Classement"
+    timeout: 5000
+
+# Le classement peut être vide initialement
+- assertVisible: "Fermer"
+
+# Fermer le classement
+- tapOn: "Fermer"
+- assertNotVisible: "Classement"
+
+# ========================================
+# SECTION 4: Test Quiz Complet avec score
+# ========================================
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-image"
+    timeout: 15000
+
+# Répondre à 10 questions rapidement
+- repeat:
+    times: 10
+    commands:
+      - assertVisible: "quiz-input"
+      - tapOn: "quiz-input"
+      - inputText: "pikachu"
+      - tapOn: "Valider"
+      - extendedWaitUntil:
+          visible: "Suivant"
+          timeout: 3000
+      - tapOn: "Suivant"
+      - extendedWaitUntil:
+          visible:
+            text: "quiz-input"
+            optional: true
+          timeout: 3000
+
+# Vérifier la boîte de dialogue du score
+- extendedWaitUntil:
+    visible: "Enregistrer ton score"
+    timeout: 5000
+
+# Enregistrer le score avec un pseudo
+- tapOn: "Pseudo"
+- inputText: "TestMaestro"
+- tapOn: "Enregistrer"
+
+# Vérifier qu'on arrive au classement
+- extendedWaitUntil:
+    visible: "Classement"
+    timeout: 5000
+- assertVisible: "TestMaestro"
+
+# Fermer le classement
+- tapOn: "Fermer"
+
+# ========================================
+# SECTION 5: Test de navigation rapide
+# ========================================
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 10000
+- tapOn: "Fermer"
+
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-image"
+    timeout: 10000
+- tapOn: "Fermer le Quiz"
+
+- tapOn: "🏆 Classement"
+- extendedWaitUntil:
+    visible: "Classement"
+    timeout: 5000
+- tapOn: "Fermer"
+
+# ========================================
+# SECTION 6: Test Performance - Multiples recharges
+# ========================================
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 15000
+
+- repeat:
+    times: 3
+    commands:
+      - assertVisible: "pokemon-image"
+      - tapOn: "Nouveau Pokémon"
+      - extendedWaitUntil:
+          visible: "pokemon-card"
+          timeout: 8000
+
+# Vérifier que l'app est toujours responsive
+- assertVisible: "pokemon-image"
+
+- tapOn: "Fermer"
+- assertVisible: "Révision Pokémon"
+
+# ========================================
+# FIN DES TESTS
+# ========================================
+

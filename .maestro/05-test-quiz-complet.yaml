@@ -1,0 +1,33 @@
+appId: com.mastercyber.tp1
+---
+# Test d'un quiz complet avec score
+- launchApp
+- assertVisible: "🎮 PokéApp"
+
+# Démarrer le quiz
+- tapOn: "🎯 Quiz Pokémon"
+- extendedWaitUntil:
+    visible: "quiz-image"
+    timeout: 15000
+
+# Répondre aux 10 questions
+- repeat:
+    times: 10
+    commands:
+      - assertVisible: "quiz-input"
+      - tapOn: "quiz-input"
+      - inputText: "bulbizarre"
+      - tapOn: "Valider"
+      - tapOn: "Question suivante"
+
+# Vérifier la boîte de dialogue du score
+- extendedWaitUntil:
+    visible: "Enregistrer ton score"
+    timeout: 5000
+- assertVisible: "Ton score:"
+
+# Annuler l'enregistrement
+- tapOn: "Annuler"
+
+# Vérifier qu'on arrive au classement
+- assertVisible: "🏆 Classement"

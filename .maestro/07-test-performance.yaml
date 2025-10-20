@@ -1,0 +1,27 @@
+appId: com.mastercyber.tp1
+---
+# Test de performance - Chargement multiple de Pokémon
+- launchApp
+- assertVisible: "🎮 PokéApp"
+
+# Charger et recharger 5 Pokémon différents
+- tapOn: "Révision Pokémon"
+- extendedWaitUntil:
+    visible: "pokemon-card"
+    timeout: 15000
+
+- repeat:
+    times: 5
+    commands:
+      - assertVisible: "pokemon-image"
+      - tapOn: "Nouveau Pokémon"
+      - extendedWaitUntil:
+          visible: "pokemon-card"
+          timeout: 5000
+
+# Vérifier que l'app est toujours responsive
+- tapOn: "Noir & Blanc"
+- assertVisible: "pokemon-image"
+
+- tapOn: "Fermer"
+- assertVisible: "Révision Pokémon"
