@@ -43,6 +43,7 @@ fun App() {
         var playerNameInput by remember { mutableStateOf("") }
 
         var leaderboard by remember { mutableStateOf(listOf<Triple<String, Int, String>>()) }
+        var errorMessage by remember { mutableStateOf<String?>(null) }
 
         val resetContent: () -> Unit = {
             pokemon = null
@@ -106,11 +107,50 @@ fun App() {
                     LaunchedEffect(reloadTrigger) {
                         if (showContent && reloadTrigger >= 0) {
                             isLoading = true
-                            val (poke, colorBytes, bwBytes) = Greeting().fetchPokemonWithImage()
-                            pokemon = poke
-                            colorImage = colorBytes?.let { convertBytesToImageBitmap(it) }
-                            bwImage = bwBytes?.let { convertBytesToBlackAndWhite(it) }
-                            isLoading = false
+                            errorMessage = null
+                            try {
+                                val (poke, colorBytes, bwBytes) = Greeting().fetchPokemonWithImage()
+                                if (poke == null) {
+                                    errorMessage = "⚠️ Impossible de charger le Pokémon. Vérifiez votre connexion."
+                                } else {
+                                    pokemon = poke
+                                    colorImage = colorBytes?.let { convertBytesToImageBitmap(it) }
+                                    bwImage = bwBytes?.let { convertBytesToBlackAndWhite(it) }
+                                }
+                            } catch (e: Exception) {
+                                errorMessage = "⚠️ Erreur: ${e.message}"
+                            } finally {
+                                isLoading = false
+                            }
+                        }
+                    }
+
+                    if (errorMessage != null) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = errorMessage ?: "",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                                Button(
+                                    onClick = { 
+                                        errorMessage = null
+                                        reloadTrigger++
+                                    },
+                                    modifier = Modifier.align(Alignment.End)
+                                ) {
+                                    Text("Réessayer")
+                                }
+                            }
                         }
                     }
 
@@ -212,6 +252,13 @@ fun App() {
                                 val name = if (playerNameInput.isBlank()) "Joueur" else playerNameInput.trim()
                                 val dateStr = "now"
                                 leaderboard = leaderboard + Triple(name, quizScore, dateStr)
+                                
+                                try {
+                                    saveScoreToPreferences(name, quizScore)
+                                } catch (e: Exception) {
+                                    println("Impossible de sauvegarder le score: ${e.message}")
+                                }
+                                
                                 showNameDialog = false
                                 playerNameInput = ""
                                 resetQuizState()
@@ -238,3 +285,4 @@ fun App() {
 
 expect fun convertBytesToImageBitmap(bytes: ByteArray): ImageBitmap
 expect fun convertBytesToBlackAndWhite(bytes: ByteArray): ImageBitmap
+expect fun saveScoreToPreferences(name: String, score: Int)

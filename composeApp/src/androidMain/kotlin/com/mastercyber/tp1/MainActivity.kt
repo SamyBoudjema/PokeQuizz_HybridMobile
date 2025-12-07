@@ -11,9 +11,28 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        
+        initLeaderboardPreferences(this)
 
         setContent {
             App()
+        }
+    }
+}
+
+/** Initialise les SharedPreferences pour la persistance du classement */
+fun initLeaderboardPreferences(context: android.content.Context) {
+    val sharedPref = context.getSharedPreferences("pokequizz_leaderboard", android.content.Context.MODE_PRIVATE)
+    if (!sharedPref.contains("initialized")) {
+        sharedPref.edit().putBoolean("initialized", true).apply()
+        val scores = sharedPref.getStringSet("scores", emptySet()) ?: emptySet()
+        if (scores.isEmpty()) {
+            val defaultScores = mutableSetOf(
+                "Champion|100",
+                "Maître Pokémon|95",
+                "Entraîneur|85"
+            )
+            sharedPref.edit().putStringSet("scores", defaultScores).apply()
         }
     }
 }

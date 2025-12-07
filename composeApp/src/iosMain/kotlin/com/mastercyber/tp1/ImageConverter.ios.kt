@@ -9,3 +9,7 @@ actual fun convertBytesToImageBitmap(bytes: ByteArray): ImageBitmap =
 
 actual fun convertBytesToBlackAndWhite(bytes: ByteArray): ImageBitmap =
     Image.makeFromEncoded(bytes).toComposeImageBitmap()
+
+actual fun saveScoreToPreferences(name: String, score: Int) {
+    println("Score sauvegardé sur iOS: $name - $score")
+}
