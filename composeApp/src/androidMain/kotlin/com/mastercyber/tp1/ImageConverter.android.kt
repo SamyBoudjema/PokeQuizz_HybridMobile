@@ -15,11 +15,13 @@ fun setAppContext(context: Context) {
     appContext = context
 }
 
+/** Convertit un tableau d'octets en ImageBitmap */
 actual fun convertBytesToImageBitmap(bytes: ByteArray): ImageBitmap {
     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     return bitmap.asImageBitmap()
 }
 
+/** Convertit une image en noir et blanc */
 actual fun convertBytesToBlackAndWhite(bytes: ByteArray): ImageBitmap {
     val originalBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     val bwBitmap = Bitmap.createBitmap(
@@ -39,6 +41,7 @@ actual fun convertBytesToBlackAndWhite(bytes: ByteArray): ImageBitmap {
     return bwBitmap.asImageBitmap()
 }
 
+/** Sauvegarde le score dans SharedPreferences (Android uniquement) */
 actual fun saveScoreToPreferences(name: String, score: Int) {
     appContext?.let { context ->
         val sharedPref = context.getSharedPreferences("pokequizz_leaderboard", Context.MODE_PRIVATE)

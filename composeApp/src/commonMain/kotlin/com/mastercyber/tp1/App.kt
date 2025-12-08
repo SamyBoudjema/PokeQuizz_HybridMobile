@@ -13,6 +13,7 @@ import com.mastercyber.tp1.models.Pokemon
 import com.mastercyber.tp1.ui.screens.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/** Point d'entrée principal de l'application PokéQuizz */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
@@ -45,6 +46,7 @@ fun App() {
         var leaderboard by remember { mutableStateOf(listOf<Triple<String, Int, String>>()) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
 
+        /** Réinitialise l'état du mode révision */
         val resetContent: () -> Unit = {
             pokemon = null
             colorImage = null
@@ -53,6 +55,7 @@ fun App() {
             reloadTrigger = 0
         }
 
+        /** Réinitialise l'état du quiz */
         val resetQuizState: () -> Unit = {
             quizPokemon = null
             quizImage = null
